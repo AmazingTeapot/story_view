@@ -20,23 +20,32 @@ class VideoLoader {
   VideoLoader(this.url, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
-    if (this.videoFile != null) {
-      this.state = LoadState.success;
-      onComplete();
-    }
-
-    final fileStream = DefaultCacheManager()
-        .getFileStream(this.url, headers: this.requestHeaders);
-
-    fileStream.listen((fileResponse) {
-      if (fileResponse is FileInfo) {
-        if (this.videoFile == null) {
-          this.state = LoadState.success;
-          this.videoFile = fileResponse.file;
-          onComplete();
-        }
+    if(this.url.startsWith("http://") || this.url.startsWith("https://")) loadVideoFromFile(onComplete);
+    else {
+      if (this.videoFile != null) {
+        this.state = LoadState.success;
+        onComplete();
       }
-    });
+
+      final fileStream = DefaultCacheManager()
+          .getFileStream(this.url, headers: this.requestHeaders);
+
+      fileStream.listen((fileResponse) {
+        if (fileResponse is FileInfo) {
+          if (this.videoFile == null) {
+            this.state = LoadState.success;
+            this.videoFile = fileResponse.file;
+            onComplete();
+          }
+        }
+      });
+    }
+  }
+
+  void loadVideoFromFile(VoidCallback onComplete) {
+    this.videoFile = File(this.url);
+    this.state = LoadState.success;
+    onComplete();
   }
 }
 
