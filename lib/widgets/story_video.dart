@@ -20,7 +20,7 @@ class VideoLoader {
   VideoLoader(this.url, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
-    if(this.url.startsWith("http://") || this.url.startsWith("https://")) loadVideoFromFile(onComplete);
+    if(!this.url.startsWith("http://") && !this.url.startsWith("https://")) loadVideoFromFile(onComplete);
     else {
       if (this.videoFile != null) {
         this.state = LoadState.success;
