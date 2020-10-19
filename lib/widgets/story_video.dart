@@ -123,8 +123,8 @@ class StoryVideoState extends State<StoryVideo> {
       );
     }
 
-    return widget.videoLoader.state == LoadState.loading &&
-        !playerController.value.initialized
+    return widget.videoLoader.state == LoadState.loading ||
+        (widget.videoLoader.state == LoadState.success && !playerController.value.initialized)
         ? Center(
             child: Container(
               width: 70,
